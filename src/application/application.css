@@ -1,0 +1,8 @@
+
+.valido {
+	-fx-text-fill: rgb(0.0,0.0,255.0);
+}
+
+.invalido {
+	-fx-text-fill: rgb(255.0,0.0,0.0);
+}
