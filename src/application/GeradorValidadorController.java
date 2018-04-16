@@ -16,6 +16,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -28,6 +29,7 @@ public class GeradorValidadorController {
 	@FXML private ResourceBundle resources;
 	@FXML private URL location;
 
+	@FXML private CheckBox gerarSemFormatacao;
 	@FXML private TextField nipGerado;
 	@FXML private TextField cpfGerado;
 	@FXML private TextField nipValidar;
@@ -117,6 +119,22 @@ public class GeradorValidadorController {
 				}
 			}
 		});
+		
+		gerarSemFormatacao.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				final String cpf = cpfGerado.getText();
+				final String nip = nipGerado.getText();
+				
+				if(newValue != null && newValue) {
+					nipGerado.textProperty().setValue(nip.replaceAll("[^0-9]", ""));
+					cpfGerado.textProperty().setValue(cpf.replaceAll("[^0-9]", ""));
+				} else {
+					nipGerado.textProperty().setValue(MascaraUtil.MASCARA_NIP.format(nip.replaceAll("[^0-9]", "")));
+					cpfGerado.textProperty().setValue(MascaraUtil.MASCARA_CPF.format(cpf.replaceAll("[^0-9]", "")));
+				}
+				
+			}
+		});
 	}
 
 	@FXML
@@ -144,10 +162,18 @@ public class GeradorValidadorController {
 	}
 
 	private void setNovoNIP() {
-		nipGerado.textProperty().setValue(MascaraUtil.MASCARA_NIP.format(NIP.create()));
+		if(gerarSemFormatacao.selectedProperty().get()) {
+			nipGerado.textProperty().setValue(NIP.create());
+		} else {
+			nipGerado.textProperty().setValue(MascaraUtil.MASCARA_NIP.format(NIP.create()));
+		}
 	}
 
 	private void setNovoCPF() {
-		cpfGerado.textProperty().setValue(MascaraUtil.MASCARA_CPF.format(CPF.create()));
+		if(gerarSemFormatacao.selectedProperty().get()) {
+			cpfGerado.textProperty().setValue(CPF.create());
+		} else {
+			cpfGerado.textProperty().setValue(MascaraUtil.MASCARA_CPF.format(CPF.create()));
+		}
 	}
 }
